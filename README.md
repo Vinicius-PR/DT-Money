@@ -46,7 +46,7 @@ If you don't have an IDE, install one of you preference. In my case, I used Visu
 ### Third
 
 You clone the project. Use the commande line on your folder:
- > git clone https://github.com/Vinicius-PR/Challenge-03-Ignite-2022-GitHub-Blog.git
+ > git clone https://github.com/Vinicius-PR/DT-Money.git
  
  ### Forth
  

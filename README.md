@@ -14,7 +14,7 @@ The data about transactions is saved in a json file. Json-server library and Axi
 
 The user can:
 
-* **Add a new transacton**: To add, the user has to click on the New Transaction button and fill the form. After it, the data will be saved on file server.json.
+* **Add a new transaction**: To add, the user has to click on the New Transaction button and fill the form. After it, the data will be saved on file server.json.
 * **Delete a transaction**: The transactions saved will be listed in a table below. There is a trash icon that, clicking on it, will delete the transaction.
 
 ## Page

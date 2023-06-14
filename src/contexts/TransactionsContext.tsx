@@ -43,8 +43,6 @@ export function TransactionProvider({ children }: TransactionProviderProps) {
   const [transactionsBackUp, setTransactionsBackUp] =
     useState<Transaction[]>(inicialTransaction)
 
-  console.log('transactions', transactions)
-  console.log('transactionsBackUp', transactionsBackUp)
   useEffect(() => {
     const jsonTransactions = JSON.stringify(transactionsBackUp)
     localStorage.setItem('dt-money/transaction', jsonTransactions)

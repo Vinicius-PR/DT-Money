@@ -1,14 +1,14 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { createContext } from 'use-context-selector'
-import { api } from '../lib/axios'
+import { v4 as uuidv4 } from 'uuid'
 
 interface Transaction {
-  id: number
+  id: string
   description: string
   type: 'income' | 'outcome'
   category: string
   price: number
-  createdAt: string
+  createdAt: Date
 }
 
 interface CreateTransactionInput {
@@ -20,9 +20,8 @@ interface CreateTransactionInput {
 
 interface TransactionContextType {
   transactions: Transaction[]
-  fecthTransactions: (query?: string) => Promise<void>
-  createTransaction: (data: CreateTransactionInput) => Promise<void>
-  deleteTransactions: (transactionID: number) => Promise<void>
+  createTransaction: (data: CreateTransactionInput) => void
+  deleteTransactions: (transactionID: string) => void
 }
 
 interface TransactionProviderProps {
@@ -32,56 +31,46 @@ interface TransactionProviderProps {
 export const TransactionsContext = createContext({} as TransactionContextType)
 
 export function TransactionProvider({ children }: TransactionProviderProps) {
-  const [transactions, SetTransactions] = useState<Transaction[]>([])
+  const transactionJsonData = localStorage.getItem('dt-money/transaction')
+  const inicialTransaction = transactionJsonData
+    ? JSON.parse(transactionJsonData)
+    : []
 
-  const fecthTransactions = useCallback(async (query?: string) => {
-    const response = await api.get('transactions', {
-      params: {
-        _sort: 'createdAt',
-        _order: 'desc',
-        q: query,
-      },
-    })
+  const [transactions, setTransactions] =
+    useState<Transaction[]>(inicialTransaction)
 
-    SetTransactions(response.data)
+  useEffect(() => {
+    const jsonTransactions = JSON.stringify(transactions)
+    localStorage.setItem('dt-money/transaction', jsonTransactions)
+  }, [transactions])
+
+  const createTransaction = useCallback((data: CreateTransactionInput) => {
+    const { description, category, price, type } = data
+    const transaction = {
+      id: uuidv4(),
+      description,
+      price,
+      category,
+      type,
+      createdAt: new Date(),
+    }
+    setTransactions((state) => [transaction, ...state])
   }, [])
 
-  const createTransaction = useCallback(
-    async (data: CreateTransactionInput) => {
-      const { description, category, price, type } = data
-      const response = await api.post('transactions', {
-        description,
-        price,
-        category,
-        type,
-        createdAt: new Date(),
-      })
-
-      SetTransactions((state) => [response.data, ...state])
-    },
-    [],
-  )
-
   const deleteTransactions = useCallback(
-    async (transactionId: number) => {
-      await api.delete(`transactions/${transactionId}`)
+    (transactionId: string) => {
       const filteredTransactions = transactions.filter((transaction) => {
         return transaction.id !== transactionId
       })
-      SetTransactions(filteredTransactions)
+      setTransactions(filteredTransactions)
     },
     [transactions],
   )
-
-  useEffect(() => {
-    fecthTransactions()
-  }, [fecthTransactions])
 
   return (
     <TransactionsContext.Provider
       value={{
         transactions,
-        fecthTransactions,
         createTransaction,
         deleteTransactions,
       }}

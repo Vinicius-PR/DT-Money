@@ -3,6 +3,7 @@
 DT Money is an application to save incomes and outcomes. It sums all of it and show a summary. It has only 1 page.
 
 ## Languagues used
+* ReactJS
 * HTML
 * CSS (Styled Components)
 * javaScript
@@ -10,12 +11,16 @@ DT Money is an application to save incomes and outcomes. It sums all of it and s
 
 ## Explanation
 
-The data about transactions is saved in a json file. Json-server library and Axios are used for it, to mimicry a back-end.
+The application uses ContextAPI, because multiple components uses the transaction data. So to avoid prop drilling, context was a better choice. Also, a custom hook was created to calculate the incomes, outcomes and total. The useSummary hook. The data about transactions is saved in a localStorage.
 
 The user can:
 
 * **Add a new transaction**: To add, the user has to click on the New Transaction button and fill the form. After it, the data will be saved on file server.json.
 * **Delete a transaction**: The transactions saved will be listed in a table below. There is a trash icon that, clicking on it, will delete the transaction.
+
+## Conclusion
+
+It was a fun app to code. I learned more about hooks like useCallback and also how to do a custom hook, to organize the code. Furthermore, my skills as a front-end dev were increased.
 
 ## Page
 ### Single page

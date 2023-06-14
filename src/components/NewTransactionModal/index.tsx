@@ -29,10 +29,10 @@ interface NewTransactionsModalProps {
 export function NewTransactionModal({
   handleCloseDialog,
 }: NewTransactionsModalProps) {
-  const createTransaction = useContextSelector(
+  const { createTransaction } = useContextSelector(
     TransactionsContext,
     (context) => {
-      return context.createTransaction
+      return context
     },
   )
 
@@ -48,6 +48,7 @@ export function NewTransactionModal({
 
   async function handleNewTransaction(data: NewTransactionFormInputs) {
     createTransaction(data)
+    // saveTransactionsAtStorage()
     reset()
     handleCloseDialog()
   }

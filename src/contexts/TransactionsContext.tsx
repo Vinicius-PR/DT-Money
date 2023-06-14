@@ -20,6 +20,7 @@ interface CreateTransactionInput {
 
 interface TransactionContextType {
   transactions: Transaction[]
+  fetchTransactions: (query: string) => void
   createTransaction: (data: CreateTransactionInput) => void
   deleteTransactions: (transactionID: string) => void
 }
@@ -39,10 +40,34 @@ export function TransactionProvider({ children }: TransactionProviderProps) {
   const [transactions, setTransactions] =
     useState<Transaction[]>(inicialTransaction)
 
+  const [transactionsBackUp, setTransactionsBackUp] =
+    useState<Transaction[]>(inicialTransaction)
+
+  console.log('transactions', transactions)
+  console.log('transactionsBackUp', transactionsBackUp)
   useEffect(() => {
-    const jsonTransactions = JSON.stringify(transactions)
+    const jsonTransactions = JSON.stringify(transactionsBackUp)
     localStorage.setItem('dt-money/transaction', jsonTransactions)
-  }, [transactions])
+  }, [transactionsBackUp])
+
+  const fetchTransactions = useCallback(
+    (query: string) => {
+      if (query === '') {
+        setTransactions(transactionsBackUp)
+      } else {
+        const fetchedTransactions: Transaction[] = transactionsBackUp.filter(
+          (transaction) => {
+            return (
+              transaction.category.indexOf(query) !== -1 ||
+              transaction.description.indexOf(query) !== -1
+            )
+          },
+        )
+        setTransactions(fetchedTransactions)
+      }
+    },
+    [transactionsBackUp],
+  )
 
   const createTransaction = useCallback((data: CreateTransactionInput) => {
     const { description, category, price, type } = data
@@ -54,6 +79,7 @@ export function TransactionProvider({ children }: TransactionProviderProps) {
       type,
       createdAt: new Date(),
     }
+    setTransactionsBackUp((state) => [transaction, ...state])
     setTransactions((state) => [transaction, ...state])
   }, [])
 
@@ -62,6 +88,7 @@ export function TransactionProvider({ children }: TransactionProviderProps) {
       const filteredTransactions = transactions.filter((transaction) => {
         return transaction.id !== transactionId
       })
+      setTransactionsBackUp(filteredTransactions)
       setTransactions(filteredTransactions)
     },
     [transactions],
@@ -71,6 +98,7 @@ export function TransactionProvider({ children }: TransactionProviderProps) {
     <TransactionsContext.Provider
       value={{
         transactions,
+        fetchTransactions,
         createTransaction,
         deleteTransactions,
       }}

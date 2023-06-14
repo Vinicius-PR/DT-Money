@@ -17,12 +17,17 @@ export function Transactions() {
     return context.transactions
   })
 
-  const deleteTransaction = useContextSelector(
+  const { deleteTransactions } = useContextSelector(
     TransactionsContext,
     (context) => {
-      return context.deleteTransactions
+      return context
     },
   )
+
+  function handleDeleteTransaction(id: string) {
+    deleteTransactions(id)
+    // saveTransactionsAtStorage()
+  }
 
   return (
     <div>
@@ -51,7 +56,7 @@ export function Transactions() {
                     <td>
                       <Trash
                         size={20}
-                        onClick={() => deleteTransaction(transaction.id)}
+                        onClick={() => handleDeleteTransaction(transaction.id)}
                       />
                     </td>
                   </tr>

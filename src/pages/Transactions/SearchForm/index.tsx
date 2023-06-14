@@ -14,10 +14,10 @@ const searchFormSchema = z.object({
 type SearchFormInputs = z.infer<typeof searchFormSchema>
 
 export function SearchForm() {
-  const fecthTransactions = useContextSelector(
+  const fetchTransactions = useContextSelector(
     TransactionsContext,
     (context) => {
-      return context.fecthTransactions
+      return context.fetchTransactions
     },
   )
 
@@ -30,7 +30,7 @@ export function SearchForm() {
   })
 
   async function handleSearchtransactions(data: SearchFormInputs) {
-    await fecthTransactions(data.query)
+    await fetchTransactions(data.query)
   }
 
   return (
